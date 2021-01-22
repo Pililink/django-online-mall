@@ -2,10 +2,11 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.http import HttpResponse
 from django.views.generic import View
-from apps.user.models import User
+from apps.user.models import User,Adderss
+from apps.goods.models import GoodsSKU
 
 # 导入django内置用户认证模块
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import SignatureExpired
@@ -14,9 +15,17 @@ import re
 
 from celery_tasks.tasks import send_register_active_email
 
+#登录状态判断Mixin
+from utils.mixin import LoginRequiredMixin
+
+from django_redis import get_redis_connection
 
 # Create your views here.
 
+'''
+django3 的验证系统官方文档
+https://docs.djangoproject.com/zh-hans/3.1/topics/auth/default/
+'''
 
 # /user/register
 class RegisterView(View):
@@ -160,20 +169,107 @@ class LoginView(View):
             # 用户名或密码错误
             return render(request, 'login.html', {'errmsg': '用户名或密码错误'})
 
+# /user/logout
+class LogoutView(View):
+    def get(self,request):
+        '''退出用户'''
+        #清楚用户的session信息
+        logout(request)
+        return redirect(reverse("goods:index"))
+
+
 #/user
-class UserInfoView(View):
+class UserInfoView(LoginRequiredMixin,View):
     '''用户信息-信息页'''
     def get(self,request):
-        return render(request,'user/user_center_info.html',{'page':"user"})
+
+        # 如果用户没有登录 request.user 是AnonymousUser类的一个实例,is_authenticated返回False
+        # 如果用户登录 request.user 是User类的一个实例,is_authenticated返回True
+        # request.user.is_authenticated()
+        # 在django中除了自己设定的模板变量之外，django还会把request.user也传给模板文件（名字为user）
+
+
+
+        # 获取用户的个人信息
+        # 获取对应的user对象
+        user = request.user
+        address = Adderss.objects.get_default_address(user=user)
+
+        # 获取用户的历史浏览记录
+        # 从redis数据库中获取浏览记录
+        con = get_redis_connection('default')
+        history_key = 'history_%d'%user.id
+        sku_ids = con.lrange(history_key,0,4)#取前五个
+        # 获取前五个浏览记录中的商品信息
+        # 遍历查询，以便保持对应的位置
+        goods_li = []
+        for id in sku_ids:
+            goods = GoodsSKU.objects.get(id=id)
+            goods_li.append(goods)
+
+        # 组织上下问
+        context= {
+            'page':"user",
+            'address':address,
+            "goods_li":goods_li
+        }
+
+        return render(request,'user/user_center_info.html',context)
 
 #/user/order
-class UserOrderView(View):
+class UserOrderView(LoginRequiredMixin,View):
     '''用户信息-订单页'''
     def get(self,request):
+
+        # 获取用户的订单信息
+
         return render(request,'user/user_center_order.html',{'page':"order"})
 
 #/user/address
-class UserAddressView(View):
+class UserAddressView(LoginRequiredMixin,View):
     '''用户信息-地址页'''
     def get(self,request):
-        return render(request,'user/user_center_site.html',{'page':"address"})
+        # 获取对应的user对象
+        user = request.user
+        # 获取用户的默认受收获地址
+        address = Adderss.objects.get_default_address(user=user)
+
+        return render(request,'user/user_center_site.html',{'page':"address",'address':address})
+
+    def post(self,request):
+        '''地址添加'''
+        #接受数据
+        receiver = request.POST.get('reveiver')
+        addr = request.POST.get('addr')
+        zip_code = request.POST.get('zip_code')
+        phone = request.POST.get('phone')
+        #校验数据
+        if not all([receiver,addr,phone]):
+            return render(request,'user/user_center_site.html',{'page':"address",'errmsg':'数据不完整'})
+        # 校验手机号
+        if not re.match(r'^1[3|4|5|7|8][0-9]{9}$',phone):
+            return render(request, 'user/user_center_site.html', {'page': "address", 'errmsg': '手机号格式错误'})
+
+        #添加地址
+        #如果用户已存在默认收获地址则添加的收货地址设为默认，否则新添加的收货地址不设为默认地址
+
+        #获取对应的user对象
+        user = request.user
+        address = Adderss.objects.get_default_address(user=user)
+
+        if address:
+            is_default = False
+        else:
+            is_default = True
+
+        # 创建地址
+        Adderss.objects.create(user=user,
+                               receiver=receiver,
+                               addr=addr,
+                               zip_code=zip_code,
+                               phone=phone,
+                               is_default=is_default
+                               )
+
+        #返回应答，刷新地址页面
+        return redirect(reverse('user:address'))
