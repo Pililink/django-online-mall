@@ -28,7 +28,7 @@ SECRET_KEY = 'x55wdcdjbmklwd_#%j0q%z+4q6(7k=)2x+-qn0f)k)oxih*j^a'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -88,7 +88,7 @@ DATABASES = {
         'NAME': "dailyfresh",#数据库需要手动创建。
         'USER':'root',
         'PASSWORD':'2966',
-        'HOST':'10.10.10.10',
+        'HOST':'10.0.0.163',
         'PORT':3306,
     }
 }
@@ -163,7 +163,7 @@ EMAIL_FROM = 'dajngo_test<xiaoqin2966@qq.com>'
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://10.10.10.10:6379/9",
+        "LOCATION": "redis://10.0.0.163:6379/9",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -176,3 +176,13 @@ SESSION_CACHE_ALIAS = "default"
 
 # 配系统登录地址
 LOGIN_URL = '/user/login'
+
+# 自定义django文件存储类
+
+DEFAULT_FILE_STORAGE = 'utils.fdfs.storage.FDFSStorage'
+import os
+# 设置fdfs使用的client.conf文件绝对路径
+FDFS_CLIENT_CONF = r'/Volumes/public_data/src/TTsx/dailyfresh/utils/fdfs/client.conf'
+print(FDFS_CLIENT_CONF)
+# 设置fdfs存储服务器上nginx的IP和端口号（默认8888）
+FDFS_URL = r'http://10.0.0.163:8888/'
