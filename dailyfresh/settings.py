@@ -180,9 +180,7 @@ LOGIN_URL = '/user/login'
 # 自定义django文件存储类
 
 DEFAULT_FILE_STORAGE = 'utils.fdfs.storage.FDFSStorage'
-import os
 # 设置fdfs使用的client.conf文件绝对路径
 FDFS_CLIENT_CONF = r'/Volumes/public_data/src/TTsx/dailyfresh/utils/fdfs/client.conf'
-print(FDFS_CLIENT_CONF)
 # 设置fdfs存储服务器上nginx的IP和端口号（默认8888）
 FDFS_URL = r'http://10.0.0.163:8888/'
