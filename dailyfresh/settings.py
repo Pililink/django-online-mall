@@ -14,7 +14,6 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 #通过这个设置免去应用app模块时前面加入路径apps。如 apps.user.urls
 import os
 import sys

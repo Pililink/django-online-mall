@@ -3,9 +3,6 @@ from django.core.mail import send_mail
 from django.conf import settings
 from celery import Celery
 from django.template import loader, RequestContext
-from apps.goods.models import *
-from django.shortcuts import render
-from django_redis import get_redis_connection
 
 import time,os
 
@@ -18,8 +15,9 @@ import time,os
 # 创建一个Celery类的实例对象
 # 第一个参数可以自定义。但是一般使用导包路径做完这个的名字
 # 第二个参数borker指定中间人
-app = Celery('celery_tasks.tasks', broker='redis://10.0.0.34:6379/8')
-
+app = Celery('celery_tasks.tasks', broker='redis://10.0.0.200:6379/8')
+# !!!注意在celery中使用django的模型类，需要在环境初始化之后才能导入包!!!
+from apps.goods.models import *
 
 # 定义任务函数
 @app.task
