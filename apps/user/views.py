@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.http import HttpResponse
 from django.views.generic import View
-from apps.user.models import User,Adderss
+from apps.user.models import User,Address
 from apps.goods.models import GoodsSKU
 
 # 导入django内置用户认证模块
@@ -193,7 +193,7 @@ class UserInfoView(LoginRequiredMixin,View):
         # 获取用户的个人信息
         # 获取对应的user对象
         user = request.user
-        address = Adderss.objects.get_default_address(user=user)
+        address = Address.objects.get_default_address(user=user)
 
         # 获取用户的历史浏览记录
         # 从redis数据库中获取浏览记录
@@ -232,7 +232,7 @@ class UserAddressView(LoginRequiredMixin,View):
         # 获取对应的user对象
         user = request.user
         # 获取用户的默认受收获地址
-        address = Adderss.objects.get_default_address(user=user)
+        address = Address.objects.get_default_address(user=user)
 
         return render(request,'user/user_center_site.html',{'page':"address",'address':address})
 
@@ -255,7 +255,7 @@ class UserAddressView(LoginRequiredMixin,View):
 
         #获取对应的user对象
         user = request.user
-        address = Adderss.objects.get_default_address(user=user)
+        address = Address.objects.get_default_address(user=user)
 
         if address:
             is_default = False
@@ -263,7 +263,7 @@ class UserAddressView(LoginRequiredMixin,View):
             is_default = True
 
         # 创建地址
-        Adderss.objects.create(user=user,
+        Address.objects.create(user=user,
                                receiver=receiver,
                                addr=addr,
                                zip_code=zip_code,

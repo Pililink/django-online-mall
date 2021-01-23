@@ -33,7 +33,7 @@ class AddressManager(models.Manager):
             address = None
         return address
 
-class Adderss(BaseModel):
+class Address(BaseModel):
     '''地址模型类'''
     user = models.ForeignKey('User',verbose_name='所属账户', on_delete=models.DO_NOTHING)
     receiver = models.CharField(max_length=20,verbose_name="收件人")

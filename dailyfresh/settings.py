@@ -11,13 +11,15 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
-import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 #通过这个设置免去应用app模块时前面加入路径apps。如 apps.user.urls
-sys.path.insert(0,str(BASE_DIR / 'apps'))
+import os
+import sys
+
+sys.path.insert(0, os.path.join(str(BASE_DIR), 'apps'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -88,7 +90,7 @@ DATABASES = {
         'NAME': "dailyfresh",#数据库需要手动创建。
         'USER':'root',
         'PASSWORD':'2966',
-        'HOST':'10.0.0.163',
+        'HOST':'10.0.0.200',
         'PORT':3306,
     }
 }
@@ -163,7 +165,7 @@ EMAIL_FROM = 'dajngo_test<xiaoqin2966@qq.com>'
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://10.0.0.163:6379/9",
+        "LOCATION": "redis://10.0.0.200:6379/9",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -183,4 +185,4 @@ DEFAULT_FILE_STORAGE = 'utils.fdfs.storage.FDFSStorage'
 # 设置fdfs使用的client.conf文件绝对路径
 FDFS_CLIENT_CONF = r'/Volumes/public_data/src/TTsx/dailyfresh/utils/fdfs/client.conf'
 # 设置fdfs存储服务器上nginx的IP和端口号（默认8888）
-FDFS_URL = r'http://10.0.0.163:8888/'
+FDFS_URL = r'http://10.0.0.200:8888/'
