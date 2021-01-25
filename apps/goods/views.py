@@ -54,4 +54,4 @@ class IndexView(View):
                    'cart_count':cart_count}
 
         # 使用模板
-        return render(request, 'index.html', context)
+        return render(request, 'delindex.html', context)

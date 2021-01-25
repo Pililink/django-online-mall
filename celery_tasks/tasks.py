@@ -12,6 +12,9 @@ import time,os
 # os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dailyfresh.settings")
 # django.setup()
 
+#celery -A celery_tasks.tasks worker -l INFO
+
+
 # 创建一个Celery类的实例对象
 # 第一个参数可以自定义。但是一般使用导包路径做完这个的名字
 # 第二个参数borker指定中间人
@@ -37,9 +40,7 @@ def send_register_active_email(to_email, username, token):
 
 @app.task
 def generate_static_index_html():
-    '''生成首页静态页面'''
-    '''首页'''
-
+    '''产生首页静态页面'''
     # 获取商品的种类信息
     types = GoodsType.objects.all()
 
@@ -50,7 +51,7 @@ def generate_static_index_html():
     promotion_banners = IndexPromotionBanner.objects.all().order_by('index')
 
     # 获取首页分类商品展示信息
-    for type in types: # GoodsType
+    for type in types:  # GoodsType
         # 获取type种类首页分类商品的图片展示信息
         image_banners = IndexTypeGoodsBanner.objects.filter(type=type, display_type=1).order_by('index')
         # 获取type种类首页分类商品的文字展示信息
@@ -61,20 +62,18 @@ def generate_static_index_html():
         type.title_banners = title_banners
 
 
-
     # 组织模板上下文
-    context = {'types':types,
-               'goods_banners':goods_banners,
-               'promotion_banners':promotion_banners,
-              }
+    context = {'types': types,
+               'goods_banners': goods_banners,
+               'promotion_banners': promotion_banners}
 
     # 使用模板
-
-    # 1.加载模板文件
+    # 1.加载模板文件,返回模板对象
     temp = loader.get_template('celery_static/static_index.html')
     # 2.模板渲染
     static_index_html = temp.render(context)
-    # 3.生成首页对应的静态文件
-    save_path = os.path.join(str(settings.BASE_DIR),'static/index.html')
-    with open(save_path,'w')as f:
+
+    # 生成首页对应静态文件
+    save_path = os.path.join(settings.BASE_DIR, 'static/index.html')
+    with open(save_path, 'w') as f:
         f.write(static_index_html)
