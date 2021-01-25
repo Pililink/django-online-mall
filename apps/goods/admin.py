@@ -18,16 +18,26 @@ class BaseAdmin(admin.ModelAdmin):
         # 发出任务让celety worker重写生成首页静态
         generate_static_index_html.delay()
 
+@admin.register(GoodsType)
+class GoodsTypeAdmin(BaseAdmin):
+    pass
 
+@admin.register(GoodsSKU)
+class GoodsSKUAdmin(BaseAdmin):
+    pass
 
+@admin.register(Goods)
+class GoodsAdmin(BaseAdmin):
+    pass
 
+@admin.register(GoodsImage)
+class GoodsImageAdmin(BaseAdmin):
+    pass
 
+@admin.register(IndexGoodsBanner)
+class IndexGoodsBannerAdmin(BaseAdmin):
+    pass
 
-admin.site.register(GoodsType)
-admin.site.register(GoodsSKU)
-admin.site.register(Goods)
-admin.site.register(GoodsImage)
-
-admin.site.register(IndexGoodsBanner)
-admin.site.register(IndexTypeGoodsBanner)
-admin.site.register(IndexPromotionBanner,BaseAdmin)
+@admin.register(IndexTypeGoodsBanner)
+class IndexTypeGoodsBannerAdmin(BaseAdmin):
+    pass
