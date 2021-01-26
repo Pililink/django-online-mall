@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import View
-from apps.goods.models import GoodsType,IndexGoodsBanner,IndexPromotionBanner,IndexTypeGoodsBanner
+from apps.goods.models import *
 from django_redis import get_redis_connection
 from django.core.cache import cache
 # Create your views here.
