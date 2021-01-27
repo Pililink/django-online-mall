@@ -33,7 +33,7 @@
 					<p>其他规格：</p>
 					<ul>
 					{% for asku in sane_spu_skus %}
-					<li><a href="{% url 'goods:detail' asku.id%}"> {{ asku.name }}</a></li>
+					<li><a href="{% url 'goods:detail' asku.id%}"> {{ asku.name }}--{{ asku.unite}}</a></li>
 					{% endfor %}
 					</ul>
 				</div>
