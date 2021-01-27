@@ -1,6 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
+from django.urls import reverse
 from django.views.generic import View
 from apps.goods.models import *
+from apps.order.models import OrderGoods
 from django_redis import get_redis_connection
 from django.core.cache import cache
 # Create your views here.
@@ -47,6 +49,7 @@ class IndexView(View):
         cart_count = 0
         if user.is_authenticated:
             # 用户已登录
+            # 读取 用户购物车数量
             conn = get_redis_connection('default')
             cart_key = 'cart_%d'%user.id
             cart_count = conn.hlen(cart_key)
@@ -57,3 +60,53 @@ class IndexView(View):
 
         # 使用模板
         return render(request, 'index.html', context)
+
+
+# /detail/<int>
+class DateilView(View):
+    '''商品详情页'''
+    def get(self,request,sku_id):
+        '''显示详情页'''
+        try:
+            sku = GoodsSKU.objects.get(id = sku_id)
+        except GoodsSKU.DoesNotExist:
+            #商品不存在
+            return redirect(reverse('goods:index'))
+        # 获取商品的种类信息
+        types = GoodsType.objects.all()
+        # 获取商品的评论信息
+        sku_orders = OrderGoods.objects.filter(sku=sku).exclude(comment = '')
+        # 获取新品信息
+        new_skus = GoodsSKU.objects.filter(type = sku.type).order_by('-create_time')[:2]
+        # 获取同一sku其他规格的商品
+        sane_spu_skus = GoodsSKU.objects.filter(goods=sku.goods).exclude(id=sku.id)
+        # 获取用户购物车中商品的数目
+        user = request.user
+        cart_count = 0
+        if user.is_authenticated:
+            # 用户已登录
+            conn = get_redis_connection('default')
+            cart_key = 'cart_%d' % user.id
+            cart_count = conn.hlen(cart_key)
+
+            # 添加浏览记录
+            conn = get_redis_connection('default')
+            history_key = "history_%d"%user.id
+            # 移除已存在的商品id
+            conn.lrem(history_key,0,sku_id)
+            # 将商品id插入到列表的左边
+            conn.lpush(history_key,sku_id)
+            # 只保存最新的五条最近浏览
+            conn.ltrim(history_key,0,4)
+
+
+        # 组织模板上下文
+        context = {
+            'sku':sku,
+            'types':types,
+            'sku_orders':sku_orders,
+            'new_skus':new_skus,
+            'cat_count':cart_count,
+            'sane_spu_skus':sane_spu_skus
+        }
+        return render(request,'goods/detail.html',context)

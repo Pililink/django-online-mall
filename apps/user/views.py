@@ -188,8 +188,6 @@ class UserInfoView(LoginRequiredMixin,View):
         # request.user.is_authenticated()
         # 在django中除了自己设定的模板变量之外，django还会把request.user也传给模板文件（名字为user）
 
-
-
         # 获取用户的个人信息
         # 获取对应的user对象
         user = request.user
@@ -200,6 +198,7 @@ class UserInfoView(LoginRequiredMixin,View):
         con = get_redis_connection('default')
         history_key = 'history_%d'%user.id
         sku_ids = con.lrange(history_key,0,4)#取前五个
+        print(sku_ids)
         # 获取前五个浏览记录中的商品信息
         # 遍历查询，以便保持对应的位置
         goods_li = []
@@ -213,7 +212,7 @@ class UserInfoView(LoginRequiredMixin,View):
             'address':address,
             "goods_li":goods_li
         }
-
+        print(goods_li)
         return render(request,'user/user_center_info.html',context)
 
 #/user/order
