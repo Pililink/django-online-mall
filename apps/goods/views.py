@@ -89,6 +89,7 @@ class DateilView(View):
             conn = get_redis_connection('default')
             cart_key = 'cart_%d' % user.id
             cart_count = conn.hlen(cart_key)
+            print(cart_count)
 
             # 添加浏览记录
             conn = get_redis_connection('default')
@@ -107,7 +108,7 @@ class DateilView(View):
             'types':types,
             'sku_orders':sku_orders,
             'new_skus':new_skus,
-            'cat_count':cart_count,
+            'cart_count':cart_count,
             'sane_spu_skus':sane_spu_skus
         }
         return render(request,'goods/detail.html',context)
