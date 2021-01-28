@@ -1,46 +1,11 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-<head>
-	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-	<title>天天生鲜-购物车</title>
-	<link rel="stylesheet" type="text/css" href="css/reset.css">
-	<link rel="stylesheet" type="text/css" href="css/main.css">
-</head>
-<body>
-	<div class="header_con">
-		<div class="header">
-			<div class="welcome fl">欢迎来到天天生鲜!</div>
-			<div class="fr">
-				<div class="login_info fl">
-					欢迎您：<em>张 山</em>
-				</div>
-				<div class="login_btn fl">
-					<a href="login.html">登录</a>
-					<span>|</span>
-					<a href="../templates/register.html">注册</a>
-				</div>
-				<div class="user_link fl">
-					<span>|</span>
-					<a href="user_center_info.html">用户中心</a>
-					<span>|</span>
-					<a href="cart.html">我的购物车</a>
-					<span>|</span>
-					<a href="user_center_order.html">我的订单</a>
-				</div>
-			</div>
-		</div>		
-	</div>
+{% extends 'base_no_cart.html' %}
+{% load static %}
+{% block title %}天天生鲜-购物车{% endblock title %}
 
-	<div class="search_bar clearfix">
-		<a href="index.html" class="logo fl"><img src="images/logo.png"></a>
-		<div class="sub_page_name fl">|&nbsp;&nbsp;&nbsp;&nbsp;购物车</div>
-		<div class="search_con fr">
-			<input type="text" class="input_text fl" name="" placeholder="搜索商品">
-			<input type="button" class="input_btn fr" name="" value="搜索">
-		</div>		
-	</div>
+{% block page_title %}购物车{% endblock page_title %}
 
-	<div class="total_count">全部商品<em>2</em>件</div>	
+{% block body %}
+	<div class="total_count">全部商品<em>{{ total_count }}</em>件</div>
 	<ul class="cart_list_th clearfix">
 		<li class="col01">商品名称</li>
 		<li class="col02">商品单位</li>
@@ -49,61 +14,143 @@
 		<li class="col05">小计</li>
 		<li class="col06">操作</li>
 	</ul>
+    {% for sku in skus %}
 	<ul class="cart_list_td clearfix">
 		<li class="col01"><input type="checkbox" name="" checked></li>
-		<li class="col02"><img src="images/goods/goods012.jpg"></li>
-		<li class="col03">奇异果<br><em>25.80元/500g</em></li>
-		<li class="col04">500g</li>
-		<li class="col05">25.80元</li>
+		<li class="col02"><img src="{{ sku.image.url }}"></li>
+		<li class="col03">{{ sku.name }}<br><em>{{ sku.price }}元/{{ sku.unite }}</em></li>
+		<li class="col04">{{ sku.unite }}</li>
+		<li class="col05">{{ sku.price }}元</li>
 		<li class="col06">
 			<div class="num_add">
 				<a href="javascript:;" class="add fl">+</a>
-				<input type="text" class="num_show fl" value="1">	
+				<input type="text" sku_id="{{ sku.id }}" class="num_show fl" value="{{ sku.count }}">
 				<a href="javascript:;" class="minus fl">-</a>	
 			</div>
 		</li>
-		<li class="col07">25.80元</li>
+		<li class="col07">{{ sku.amount }}元</li>
 		<li class="col08"><a href="javascript:;">删除</a></li>
 	</ul>
-
-	<ul class="cart_list_td clearfix">
-		<li class="col01"><input type="checkbox" name="" checked></li>
-		<li class="col02"><img src="images/goods/goods003.jpg"></li>
-		<li class="col03">大兴大棚草莓<br><em>16.80元/500g</em></li>
-		<li class="col04">500g</li>
-		<li class="col05">16.80元</li>
-		<li class="col06">
-			<div class="num_add">
-				<a href="javascript:;" class="add fl">+</a>
-				<input type="text" class="num_show fl" value="1">	
-				<a href="javascript:;" class="minus fl">-</a>	
-			</div>
-		</li>
-		<li class="col07">16.80元</li>
-		<li class="col08"><a href="javascript:;">删除</a></li>
-	</ul>
-	
+    {% endfor %}
 
 	<ul class="settlements">
+        {% csrf_token %}
 		<li class="col01"><input type="checkbox" name="" checked=""></li>
 		<li class="col02">全选</li>
-		<li class="col03">合计(不含运费)：<span>¥</span><em>42.60</em><br>共计<b>2</b>件商品</li>
+		<li class="col03">合计(不含运费)：<span>¥</span><em>{{ total_price }}</em><br>共计<b>{{ total_count }}</b>件商品</li>
 		<li class="col04"><a href="place_order.html">去结算</a></li>
 	</ul>
+{% endblock body %}
+{% block bottomfiles %}
+	<script type="text/javascript" src="{% static 'js/jquery-1.12.4.min.js' %}"></script>
+    <script type="text/javascript">
+    //计算被选中的商品的总件数和总价格
+    //获取所有被选中的商品，并获取父级的ul元素
+    function update_page_info (){
+        total_count=0
+        total_price=0
+        $('.cart_list_td').find(':checked').parents('ul').each(function () {
+            count = $(this).find('.num_show').val()//数量
+            amount = $(this).children('.col07').text()//小计
+            //累加计算商品的总件数和总价格
+            total_count += parseInt(count)
+            total_price += parseFloat(amount)
+        })
+        //设置被选中商品的总件数和总价格
+        $('.settlements').find('em').text(total_price.toFixed(2))
+        $('.settlements').find('b').text(total_count)
 
-	<div class="footer">
-		<div class="foot_link">
-			<a href="#">关于我们</a>
-			<span>|</span>
-			<a href="#">联系我们</a>
-			<span>|</span>
-			<a href="#">招聘人才</a>
-			<span>|</span>
-			<a href="#">友情链接</a>		
-		</div>
-		<p>CopyRight © 2016 北京天天生鲜信息技术有限公司 All Rights Reserved</p>
-		<p>电话：010-****888    京ICP备*******8号</p>
-	</div>
-	
-</body>
-</html>
+    }
+
+    //计算商品小计
+    function update_goods_amount(sku_ul){
+        //获取商品的价格和数量进行计算
+        count = $(sku_ul).find('.num_show').val()//数量
+        price = $(sku_ul).children('.col05').text()//价格
+        //计算小计
+        amount = parseInt(count) * parseFloat(price)
+        //设置小计
+        sku_ul.children('.col07').text(amount.toFixed(2)+'元')
+    }
+
+    //商品列表全选与全不选
+    $('.settlements').find(':checkbox').change(function () {
+        //获取全选的状态
+        is_checked = $(this).prop('checked')
+        //遍历商品对应的checkbox,设置这些checkbox的选中状态与全选的checkbox状态一致。
+        $('.cart_list_td').find(':checkbox').each(function () {
+            $(this).prop('checked',is_checked)
+        })
+        //更新页面信息
+        update_page_info()
+    })
+
+
+    //商品对应的chacbox状态发送改变时，设置全选checkbox的状态
+    $('.cart_list_td').find(':checkbox').change(function () {
+        //获取页面上商品的数目
+        all_len = $('.cart_list_td').length
+        //获取页面被选中商品的数目
+        check = $('.cart_list_td').find(':checked').length
+        is_checked = true
+        if (all_len != check){
+            is_checked=false
+        }
+        $('.settlements').find(':checkbox').prop('checked',is_checked)
+        update_page_info()
+    })
+
+
+    //购物车商品数量增加
+    $('.add').click(function () {
+        // 获取商品id和数量
+        count = $(this).next().val()
+        sku_id = $(this).next().attr('sku_id')
+        csrf_token = $('input[name="csrfmiddlewaretoken"]').val()
+        //组织参数
+        count = parseInt(count)+1
+        params = {
+            'sku_id':sku_id,
+            'count':count,
+            'csrfmiddlewaretoken':csrf_token
+        }
+        //发起ajax post 请求，访问/cart/update
+        error_update = true
+        total=0
+        //ajax默认是异步执行，肯能会导致没有接收到数据就执行之后的操作。
+        //ajax关闭异步,会影响全局，在这个请求完成后再打开异步
+        $.ajaxSettings.async = false
+        $.post('/cart/update/',params,function (date) {
+            if(date.res == 0){
+                error_update= false
+                total=date.total
+            }else {
+                //更新失败
+                alert(date.error)
+                error_update = true
+            }
+        })
+        //ajax开启异步
+        $.ajaxSettings.async = true
+        //判断更新是否成功
+        console.log(error_update)
+        if(error_update == false){
+            //重新设置商品的数目
+            $(this).next().val(count)
+            //计算商品小计
+            update_goods_amount($(this).parents('ul'))
+            //获取商品对应的checkbox的选中状态，如果被选中则跟新页面信息
+            is_checked = $(this).parents('ul').find(':checkbox').prop('checked')
+            console.log(is_checked)
+            if (is_checked){
+                //被选中则更新页面信息
+                update_page_info()
+            }
+            //更新页面上购物车商品的总件数
+            $('.total_count').children('em').text(total)
+
+        }
+
+    })
+    </script>
+{% endblock bottomfiles %}
