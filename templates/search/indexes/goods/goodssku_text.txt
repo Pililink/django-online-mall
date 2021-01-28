@@ -1,0 +1,4 @@
+#指定全文检索的属性
+{{ object.name }}
+{{ object.desc }}
+{{ object.goods.detail }}
