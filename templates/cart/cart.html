@@ -241,5 +241,45 @@
             $(this).val(pre_count)
         }
     })
+
+    //购物车记录删除
+    $('.cart_list_td').children('.col08').children('a').click(function () {
+        //获取商品id
+        sku_id = $(this).parents('ul').find('.num_show').attr('sku_id')
+        csrf_token = $('input[name="csrfmiddlewaretoken"]').val()
+        //组织参数
+        params = {
+            'sku_id':sku_id,
+            'csrfmiddlewaretoken':csrf_token
+        }
+
+        //获取商品所在的ul元素
+        sku_ul = $(this).parents('ul')
+        //ajax默认是异步执行，肯能会导致没有接收到数据就执行之后的操作。
+        //ajax关闭异步,会影响全局，在这个请求完成后再打开异步
+        $.ajaxSettings.async = false
+        $.post('/cart/delete/',params,function (date) {
+            if(date.res == 0){
+                //删除成功
+                //获取sku_ul中商品的选中状态
+                is_checked = sku_ul.find(':checkbox').prop('checked')
+                //移除页面上的商品所在的ul元素
+                sku_ul.remove()//删除自身及子元素
+                if(is_checked){
+                    //如果是选中状态，更新结算
+                    update_page_info()
+                }
+                //更新页面上购物车商品的总件数
+                $('.total_count').children('em').text(date.total)
+
+            }else {
+                //删除失败
+                alert(date.error)
+            }
+        })
+        //ajax开启异步
+        $.ajaxSettings.async = true
+
+    })
     </script>
 {% endblock bottomfiles %}
