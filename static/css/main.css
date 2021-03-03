@@ -251,10 +251,10 @@ html,body{height:100%}
 .goods_num .num_add .add,.goods_num .num_add .minus{width:25px;line-height:25px;text-align:center;border-left:1px solid #ddd;border-bottom:1px solid #ddd;color:#666;font-size:14px}
 .goods_num .num_add .minus{border-bottom:0px}
 
-.total{height:35px;line-height:35px;margin-top:25px;}
+.total{height:35px;line-height:35px;margin-top:10px;}
 .total em{font-style:normal;color:#ff3e3e;font-size:18px}
 
-.operate_btn{height:40px;margin-top:35px;font-size:0;position:relative;}
+.operate_btn{height:40px;margin-top:5px;font-size:0;position:relative;}
 .operate_btn .buy_btn,.operate_btn .add_cart{display:inline-block;width:178px;height:38px;border:1px solid #c40000;font-size:14px;color:#c40000;line-height:38px;text-align:center;background-color:#ffeded;}
 .operate_btn .add_cart{background-color:#c40000;color:#fff;margin-left:10px;position:relative;z-index:10;}
 

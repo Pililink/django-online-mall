@@ -15,7 +15,11 @@ a{text-decoration:none;}
 
 
 /* 去掉加链接时产生的框线 */
-img{border:0;}
+img{
+    border:0;
+
+
+}
 
 /* 清除浮动 */
 .clearfix:before,.clearfix:after{content:"";display:table}

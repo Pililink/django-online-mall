@@ -14,6 +14,6 @@ urlpatterns = [
     #path('',login_required(UserInfoView.as_view()),name='user')# 用户中心信息页
 
     path('address/',UserAddressView.as_view(),name='address'),# 用户中心地址页
-    path('order/',UserOrderView.as_view(),name='order'),# 用户中心订单页
+    path('order/<int:page>',UserOrderView.as_view(),name='order'),# 用户中心订单页
     path('',UserInfoView.as_view(),name='user')# 用户中心信息页
 ]

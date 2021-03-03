@@ -27,7 +27,7 @@ sys.path.insert(0, os.path.join(str(BASE_DIR), 'apps'))
 SECRET_KEY = 'x55wdcdjbmklwd_#%j0q%z+4q6(7k=)2x+-qn0f)k)oxih*j^a'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -202,3 +202,4 @@ HAYSTACK_CONNECTIONS = {
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 #配置搜索结果每页显示的个数
 HAYSTACK_SEARCH_RESULTS_PER_PAGE = 3
+
