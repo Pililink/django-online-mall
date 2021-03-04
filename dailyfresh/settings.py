@@ -133,9 +133,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = '/static/'#静态文件访问路径
-STATICFILES_DIRS = [BASE_DIR / 'static']#静态文件目录
-
+STATIC_URL = '/static/'
+STATIC_ROOT = '/Volumes/public_data/src/TTsx/dailyfresh/static/'
 
 #django认证系统使用的模型类
 AUTH_USER_MODEL = 'user.User'
