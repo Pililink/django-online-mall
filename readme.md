@@ -31,8 +31,8 @@ wcwidth==0.2.5
 Whoosh==2.7.4
 ```
 >注意全文检索需要修改文件 https://www.cnblogs.com/chang/archive/2013/01/10/2855321.html
-#用到的服务
-##celery
+# 用到的服务
+## celery
 需要另外一台服务器跑项目中的celery
 
 1.安装
@@ -45,12 +45,12 @@ celery -A celery_tasks.tasks worker -l INFO
 ```
 > 服务器运行时需要将tasks.py文件上方的语句取消注释
 
-##redis
+## redis
 安装好之后修改`settings.py`中redis的配置信息，以及`celery_task/stasks.py`中的redis的IP地址。
-##mysql
+## mysql
 版本5.7，安装之后使用修改`settings.py`中数据库的信息。使用django命令初始化数据库。
-##dastdfs
-###使用docker安装
+## dastdfs
+### 使用docker安装
 
 1.安装fdfs的tracker，不需要修改
 ```
@@ -62,9 +62,9 @@ docker run -d --network=host --name storage -e TRACKER_SERVER=你服务器自己
 ```
 3.进入tracker容器修改配置。
 ```
-#进入容器
+# 进入容器
 docker exec -it tracker bash
-#修改client.conf文件
+# 修改client.conf文件
 vi /etc/fdfs/client.conf
 tracker_server=你自己的ip:22122
 ```
@@ -75,8 +75,8 @@ tracker_server=你自己的ip:22122
 `utils/dafs/client.conf`中的tracker_server地址
 >引用：https://www.cnblogs.com/yangzhuxian/p/13879035.html
 
-#nginx配置
-##运行端（实际运行django服务器的服务器）
+# nginx配置
+## 运行端（实际运行django服务器的服务器）
 配置信息
 ```
 worker_processes  1;
@@ -121,7 +121,7 @@ http {
     include servers/*;
 }
 ```
-##服务端（运行网站所需服务器的服务器）
+## 服务端（运行网站所需服务器的服务器）
 服务器fdfs是使用docker运行，docker中已有nginx无需修改。
 
 配置信息
@@ -150,7 +150,7 @@ http {
         }
 }
 ```
-#uwsgi
+# uwsgi
 启动： uwsgi --ini 配置文件路径
 
 停止： uwsgi --stop uwsgi.pid路径
