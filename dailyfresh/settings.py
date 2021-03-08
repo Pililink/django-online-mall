@@ -27,7 +27,7 @@ sys.path.insert(0, os.path.join(str(BASE_DIR), 'apps'))
 SECRET_KEY = 'x55wdcdjbmklwd_#%j0q%z+4q6(7k=)2x+-qn0f)k)oxih*j^a'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -87,10 +87,10 @@ WSGI_APPLICATION = 'dailyfresh.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': "dailyfresh",#数据库需要手动创建。
+        'NAME': "ttsx_test",#数据库需要手动创建。
         'USER':'root',
         'PASSWORD':'2966',
-        'HOST':'10.0.0.200',
+        'HOST':'10.10.10.10',
         'PORT':3306,
     }
 }
@@ -134,6 +134,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, '/static/'),
+)#静态文件目录
 STATIC_ROOT = '/Volumes/public_data/src/TTsx/dailyfresh/static/'
 
 #django认证系统使用的模型类
@@ -164,7 +167,7 @@ EMAIL_FROM = 'dajngo_test<xiaoqin2966@qq.com>'
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://10.0.0.200:6379/9",
+        "LOCATION": "redis://10.10.10.10:6379/9",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -184,7 +187,7 @@ DEFAULT_FILE_STORAGE = 'utils.fdfs.storage.FDFSStorage'
 # 设置fdfs使用的client.conf文件绝对路径
 FDFS_CLIENT_CONF = r'/Volumes/public_data/src/TTsx/dailyfresh/utils/fdfs/client.conf'
 # 设置fdfs存储服务器上nginx的IP和端口号（默认8888）
-FDFS_URL = r'http://10.0.0.200:8888/'
+FDFS_URL = r'http://10.10.10.10:8888/'
 
 
 #配置全文检索框架
