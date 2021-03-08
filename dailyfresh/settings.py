@@ -24,7 +24,7 @@ sys.path.insert(0, os.path.join(str(BASE_DIR), 'apps'))
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'x55wdcdjbmklwd_#%j0q%z+4q6(7k=)2x+-qn0f)k)oxih*j^a'
+SECRET_KEY = 'x55w2x+-qn0f)k)oxih*j^a'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -157,11 +157,11 @@ EMAIL_USE_SSL = True #是否使用SSL加密，qq企业邮箱要求使用
 EMAIL_HOST = 'smtp.qq.com'
 EMAIL_PORT = 465
 #发送邮件的邮箱
-EMAIL_HOST_USER = 'xiaoqin2966@qq.com'
+EMAIL_HOST_USER = '@qq.com'
 #在邮箱中设置的客户端授权密码
-EMAIL_HOST_PASSWORD = 'iyfqdncqugcsfiic'
+EMAIL_HOST_PASSWORD = 'iyfqdcqugcsfiic'
 #收件人看到的发件人
-EMAIL_FROM = 'dajngo_test<xiaoqin2966@qq.com>'
+EMAIL_FROM = 'dajngo_test<@qq.com>'
 
 #配置django-redis 缓存信息
 CACHES = {
