@@ -49,7 +49,7 @@ celery -A celery_tasks.tasks worker -l INFO
 安装好之后修改`settings.py`中redis的配置信息，以及`celery_task/stasks.py`中的redis的IP地址。
 ## mysql
 版本5.7，安装之后使用修改`settings.py`中数据库的信息。使用django命令初始化数据库。
-## dastdfs
+## fastdfs
 ### 使用docker安装
 
 1.安装fdfs的tracker，不需要修改
